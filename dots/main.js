@@ -1,5 +1,6 @@
 var dragItems = document.querySelectorAll(".item");
 var container = document.querySelector("#container");
+var moves = []
 
 // Attach event listeners to each drag item
 dragItems.forEach(function(dragItem) {
@@ -11,6 +12,7 @@ dragItems.forEach(function(dragItem) {
   dragItem.dataset.xOffset = 0;
   dragItem.dataset.yOffset = 0;
 
+  dragItem.dataset.location = "";
   //dragItem.addEventListener("touchstart", dragStart, false);
  // dragItem.addEventListener("touchend", dragEnd, false);
   //dragItem.addEventListener("touchmove", drag, false);
@@ -68,4 +70,40 @@ function drag(e) {
 
 function setTranslate(xPos, yPos, el) {
   el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+}
+
+function Save() {
+  dragItems.forEach(function(dragItem){
+    var currentdata = dragItem.dataset.location
+    dragItem.dataset.location = currentdata + dragItem.dataset.currentX +"|"  + dragItem.dataset.currentY + "," ;
+  })
+  moves.push([])
+}
+function Play() {
+  var arrays = []
+  
+  dragItems.forEach(function(dragItem){
+    arrays.push([dragItem, dragItem.dataset.location.split(',')]);
+    
+  })
+  //console.log(arrays)
+
+  arrays.forEach(function(array){
+    for (let i = 0; i < array[1].length -1; i++)
+      //console.log(array[1][i])
+      moves[i].push([array[0], array[1][i]])
+  })
+
+  //console.log(moves)
+  moves.forEach(function(move){
+    //positions = move[1].split('|')
+    console.log(move)
+    move.forEach(function(position){
+      var xy = position[1].split('|')
+      setTranslate(xy[0], xy[1], position[0])
+    })
+  })
+
+
+
 }

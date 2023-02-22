@@ -1,9 +1,12 @@
+
+
 #container {
 	width: 100%;
-	height: 100%;
-	background-image: url(/dots/field2.svg);
+	height: 90%;
+	background-image: url(/dots/field3.svg);
 	background-repeat: no-repeat;
 	background-size:contain;
+	background-position: center;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -12,13 +15,16 @@
 	touch-action: none;
   }
 .item {
-	width: 50px;
-	height: 50px;
+	width: 3vw;
+	height: 3vw;
 	border: 10px solid rgba(136, 136, 136, .5);
 	border-radius: 50%;
 	touch-action: none;
 	user-select: none;
   }
+#buttons {
+	text-align: center;
+}
   .red {
 	background-color: rgb(245, 140, 99);
   }
