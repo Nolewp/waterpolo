@@ -31,6 +31,11 @@
   .blue {
 	background-color: rgb(99, 121, 245);
   }
+  .ball {
+	width: 1.5vw;
+	height: 1.5vw;
+	background-color: rgb(236, 233, 16);
+  }
   #item:active {
 	background-color: rgba(168, 218, 220, 1.00);
   }

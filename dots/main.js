@@ -79,31 +79,29 @@ function Save() {
   })
   moves.push([])
 }
-function Play() {
-  var arrays = []
+async function Play() {
+  var arrays = [];
   
   dragItems.forEach(function(dragItem){
     arrays.push([dragItem, dragItem.dataset.location.split(',')]);
-    
-  })
-  //console.log(arrays)
+  });
+
+  var moves = [];
 
   arrays.forEach(function(array){
-    for (let i = 0; i < array[1].length -1; i++)
-      //console.log(array[1][i])
-      moves[i].push([array[0], array[1][i]])
-  })
+    for (let i = 0; i < array[1].length - 1; i++) {
+      moves[i] = moves[i] || [];
+      moves[i].push([array[0], array[1][i]]);
+    }
+  });
 
-  //console.log(moves)
-  moves.forEach(function(move){
-    //positions = move[1].split('|')
-    console.log(move)
-    move.forEach(function(position){
-      var xy = position[1].split('|')
-      setTranslate(xy[0], xy[1], position[0])
-    })
-  })
-
-
-
+  for (let i = 0; i < moves.length; i++) {
+    for (let j = 0; j < moves[i].length; j++) {
+      var position = moves[i][j];
+      var xy = position[1].split('|');
+      setTranslate(xy[0], xy[1], position[0]);
+      
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
 }
