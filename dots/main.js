@@ -79,9 +79,63 @@ function Save() {
   })
   moves.push([])
 }
+async function startCapture(displayMediaOptions) {
+  let captureStream = null;
+
+  try {
+    captureStream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+  } catch (err) {
+    console.error(`Error: ${err}`);
+  }
+  return captureStream;
+}
+
+const displayMediaOptions = {
+  video: {
+    displaySurface: 'browser',
+    logicalSurface: true,
+  },
+  audio: false
+};
+
 async function Play() {
-  var arrays = [];
+  const stream = await startCapture(displayMediaOptions);
+
+  // Define the MIME type of the video format you want to record, e.g., MP4
+  const mimeType = 'video/webm';
+
+  // Create a new instance of the MediaRecorder object, passing in the media stream and MIME type as parameters
+  const recorder = new MediaRecorder(stream, { mimeType });
+
+  // Define an array to hold the recorded video data as it is being generated
+  let recordedChunks = [];
+
+  // Set up event listeners for the MediaRecorder object to handle the recording process
+  recorder.addEventListener('dataavailable', event => {
+    // Add the recorded video data to the array of chunks
+    recordedChunks.push(event.data);
+  });
+
+  recorder.addEventListener('stop', () => {
+    // When recording is stopped, combine the chunks into a single Blob object that can be saved or streamed
+    const recordedBlob = new Blob(recordedChunks, { type: mimeType });
+
+    // Convert the Blob object into a URL that can be used to display or download the recorded video
+    const recordedUrl = URL.createObjectURL(recordedBlob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = recordedUrl;
+    a.download = 'my-video.webm';
+    document.body.appendChild(a);
+    a.click();
   
+
+    // Do something with the recorded URL, such as display it in a video player or download it as a file
+    console.log(recordedUrl);
+  });
+
+  var arrays = [];
+
   dragItems.forEach(function(dragItem){
     arrays.push([dragItem, dragItem.dataset.location.split(',')]);
   });
@@ -95,13 +149,23 @@ async function Play() {
     }
   });
 
+  recorder.start();
+
   for (let i = 0; i < moves.length; i++) {
     for (let j = 0; j < moves[i].length; j++) {
       var position = moves[i][j];
       var xy = position[1].split('|');
       setTranslate(xy[0], xy[1], position[0]);
-      
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  recorder.stop();
+
+  stopCapture();
+  function stopCapture() {
+    stream.getTracks().forEach(track => {
+      track.stop();
+    });
   }
 }
