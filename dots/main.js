@@ -163,6 +163,7 @@ async function Play() {
   recorder.stop();
 
   stopCapture();
+
   function stopCapture() {
     stream.getTracks().forEach(track => {
       track.stop();
