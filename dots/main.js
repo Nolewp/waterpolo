@@ -170,3 +170,33 @@ async function Play() {
     });
   }
 }
+
+async  function playOnly(){
+  var arrays = [];
+
+  dragItems.forEach(function(dragItem){
+    arrays.push([dragItem, dragItem.dataset.location.split(',')]);
+  });
+
+  var moves = [];
+
+  arrays.forEach(function(array){
+    for (let i = 0; i < array[1].length - 1; i++) {
+      moves[i] = moves[i] || [];
+      moves[i].push([array[0], array[1][i]]);
+    }
+  });
+
+  for (let i = 0; i < moves.length; i++) {
+    for (let j = 0; j < moves[i].length; j++) {
+      var position = moves[i][j];
+      var xy = position[1].split('|');
+      setTranslate(xy[0], xy[1], position[0]);
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
+function reload() {
+  location.reload();
+}
