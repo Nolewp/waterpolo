@@ -1,81 +1,65 @@
 var dragItems = document.querySelectorAll(".item");
 var container = document.querySelector("#container");
-var moves = []
+
+dragItems.forEach(function(dragItem) {
+  dragItem.dataset.location = "";
+})
+
+moves = []
+
 
 // Attach event listeners to each drag item
-dragItems.forEach(function(dragItem) {
-  // Set initial values for each item
-  dragItem.dataset.currentX = 0;
-  dragItem.dataset.currentY = 0;
-  dragItem.dataset.initialX = 0;
-  dragItem.dataset.initialY = 0;
-  dragItem.dataset.xOffset = 0;
-  dragItem.dataset.yOffset = 0;
+dragItems.forEach(function(ball){ 
+    ball.onmousedown = function(event) {
+      // (1) prepare to moving: make absolute and on top by z-index
+      ball.style.position = 'absolute';
+      ball.style.zIndex = 1000;
+      
 
-  dragItem.dataset.location = "";
-  //dragItem.addEventListener("touchstart", dragStart, false);
- // dragItem.addEventListener("touchend", dragEnd, false);
-  //dragItem.addEventListener("touchmove", drag, false);
+      // move it out of any current parents directly into body
+      // to make it positioned relative to the body
+      document.body.append(ball);
 
-  dragItem.addEventListener("mousedown", dragStart, false);
-  dragItem.addEventListener("mouseup", dragEnd, false);
-  dragItem.addEventListener("mousemove", drag, false);
-});
+      // centers the ball at (pageX, pageY) coordinates
+      function moveAt(pageX, pageY) {
+      ball.style.left = pageX - ball.offsetWidth / 2 + 'px';
+      ball.style.top = pageY - ball.offsetHeight / 2 + 'px';
+      }
 
-function dragStart(e) {
-  var dragItem = e.target;
+      // move our absolutely positioned ball under the pointer
+      moveAt(event.pageX, event.pageY);
 
-  if (e.type === "touchstart") {
-    dragItem.dataset.initialX = e.touches[0].clientX - dragItem.dataset.xOffset;
-    dragItem.dataset.initialY = e.touches[0].clientY - dragItem.dataset.yOffset;
-  } else {
-    dragItem.dataset.initialX = e.clientX - dragItem.dataset.xOffset;
-    dragItem.dataset.initialY = e.clientY - dragItem.dataset.yOffset;
-  }
+      function onMouseMove(event) {
+          moveAt(event.pageX, event.pageY);
+          ball.dataset.initialX = ball.clientX ;
+          ball.dataset.initialY = ball.clientY ;
+      }
 
-  if (dragItem.classList.contains("item")) {
-    dragItem.dataset.active = "true";
-  }
-}
+      // (2) move the ball on mousemove
+      document.addEventListener('mousemove', onMouseMove);
 
-function dragEnd(e) {
-  var dragItem = e.target;
+      // (3) drop the ball, remove unneeded handlers
+      ball.onmouseup = function() {
+          document.removeEventListener('mousemove', onMouseMove);
+          ball.onmouseup = null;
+      };
+      ball.ondragstart = function() {
+          return false;
+      };
+  };
+})
 
-  dragItem.dataset.initialX = dragItem.dataset.currentX;
-  dragItem.dataset.initialY = dragItem.dataset.currentY;
-
-  dragItem.dataset.active = "false";
-}
-
-function drag(e) {
-  var dragItem = e.target;
-
-  if (dragItem.dataset.active === "true") {
-    e.preventDefault();
-
-    if (e.type === "touchmove") {
-      dragItem.dataset.currentX = e.touches[0].clientX - dragItem.dataset.initialX;
-      dragItem.dataset.currentY = e.touches[0].clientY - dragItem.dataset.initialY;
-    } else {
-      dragItem.dataset.currentX = e.clientX - dragItem.dataset.initialX;
-      dragItem.dataset.currentY = e.clientY - dragItem.dataset.initialY;
-    }
-
-    dragItem.dataset.xOffset = dragItem.dataset.currentX;
-    dragItem.dataset.yOffset = dragItem.dataset.currentY;
-
-    setTranslate(dragItem.dataset.currentX, dragItem.dataset.currentY, dragItem);
-  }
-}
-
-function setTranslate(xPos, yPos, el) {
-  el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-}
 
 function Save() {
-  dragItems.forEach(function(dragItem){
-    var currentdata = dragItem.dataset.location
-    dragItem.dataset.location = currentdata + dragItem.dataset.currentX +"|"  + dragItem.dataset.currentY + "," ;
+  dragItems.forEach(function(ball){
+    
+      var currentdata = ball.dataset.location;
+      var ballLocation = {
+      left: ball.offsetLeft,
+      top: ball.offsetTop
+      };
+      currentdata = currentdata + ballLocation.left + '|' + ballLocation.top + ',';
+      ball.dataset.location = currentdata;
   })
   moves.push([])
 }
@@ -155,7 +139,8 @@ async function Play() {
     for (let j = 0; j < moves[i].length; j++) {
       var position = moves[i][j];
       var xy = position[1].split('|');
-      setTranslate(xy[0], xy[1], position[0]);
+      position[0].style.left = xy[0] + 'px';
+      position[0].style.top =  xy[1] + 'px';
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
@@ -191,7 +176,8 @@ async  function playOnly(){
     for (let j = 0; j < moves[i].length; j++) {
       var position = moves[i][j];
       var xy = position[1].split('|');
-      setTranslate(xy[0], xy[1], position[0]);
+      position[0].style.left = xy[0] + 'px';
+      position[0].style.top =  xy[1] + 'px';
     }
     await new Promise(resolve => setTimeout(resolve, 1000));
   }
