@@ -1,65 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Water Polo Field</title>
+  <title>Interactive Drawing (Avoid "ball" Div)</title>
   <style>
     body {
-      background-color: #dee7e7;
       margin: 0;
-      padding: 0;
+      overflow: hidden;
     }
-    
-    .field {
-      position: relative;
-      width: 1000px;
-      height: 100vh;
-      margin: 0 auto;
-      background-color: #05bddd;
-    }
-    
-    .goal {
+    #canvas {
       position: absolute;
       top: 0;
-      left: 40%;
-      width: 20%;
-      height: 5vh;
-      background-color: #FF0000;
-    }
-    
-    .two-meter-line {
-      position: absolute;
-      top: 25vh;
       left: 0;
-      width: 100%;
-      height: 1vh;
-      background-color: #000000;
+      z-index: 1;
     }
-    
-    .five-meter-line {
+    #ball {
       position: absolute;
-      top: 50vh;
-      left: 0;
-      width: 100%;
-      height: 1vh;
-      background-color: #000000;
-    }
-    
-    .six-meter-line {
-      position: absolute;
-      top: 60vh;
-      left: 0;
-      width: 100%;
-      height: 1vh;
-      background-color: #000000;
+      top: 100px;
+      left: 100px;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      border-radius: 50%;
+      cursor: default;
+      z-index: 2;
     }
   </style>
 </head>
 <body>
-  <div class="field">
-    <div class="goal"></div>
-    <div class="two-meter-line"></div>
-    <div class="five-meter-line"></div>
-    <div class="six-meter-line"></div>
-  </div>
+  <canvas id="canvas"></canvas>
+  <div id="ball"></div>
+
+  <script>
+    // Initialize variables for drawing
+    let isDrawing = false;
+    let prevX = 0;
+    let prevY = 0;
+
+    // Function to draw on the canvas
+    function draw(e) {
+      if (!isDrawing) return;
+
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const currentX = e.clientX;
+      const currentY = e.clientY;
+      
+      ctx.beginPath();
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(currentX, currentY);
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      prevX = currentX;
+      prevY = currentY;
+    }
+
+    // Event listener for mouse down on the canvas
+    document.getElementById('canvas').addEventListener('mousedown', (e) => {
+      // Check if the event target has an ID of "ball" (the ball div)
+      const isMouseDownOnBall = e.target.id === 'ball';
+      if (!isMouseDownOnBall) {
+        isDrawing = true;
+        prevX = e.clientX;
+        prevY = e.clientY;
+      }
+    });
+
+    // Event listener for mouse up anywhere on the page
+    document.addEventListener('mouseup', () => {
+      isDrawing = false;
+    });
+
+    // Event listener for mouse move on the canvas (for drawing)
+    document.getElementById('canvas').addEventListener('mousedown', draw);
+  </script>
 </body>
 </html>
