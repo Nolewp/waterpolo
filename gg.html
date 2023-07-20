@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Water Polo Field</title>
-  <link rel="stylesheet" href="style.css">
+  
   <style>
     body {
       background-color: #dee7e7;
@@ -10,10 +10,10 @@
       padding: 0;
     }
     
-    .field {
+    .canvas {
       position: relative;
-      width: 1000px;
-      height: 90vh;
+      width: 600px;
+      height: 500px;
       margin: 0 auto;
       border-radius: 10px;
       background-color: #05bddd;
@@ -39,7 +39,7 @@
     
     .five-meter-line {
       position: absolute;
-      top: 50vh;
+      top: vh;
       left: 0;
       width: 100%;
       height: 1vh;
@@ -58,17 +58,13 @@
 </head>
 <body>
 
-  <div class="field">
+  <canvas id="canvas" class="canvas">
     <div class="goal"></div>
 
     <div class="two-meter-line"></div>
     <div class="five-meter-line"></div>
     <div class="six-meter-line"></div>
-  </div>
-
-
-
-        
+  </canvas>
 
         <!-- <div id="ball4" class="item red" ></div>
         <div id="ball5" class="item red" ></div>

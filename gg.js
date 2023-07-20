@@ -1,13 +1,28 @@
-var playerItems = document.querySelectorAll(".item");
 
-playerItems.forEach(function(item) {
-    // item.dataset.currentX = 0;
-    // item.dataset.currentY = 0;
-    // item.dataset.initialX = 0;
-    // item.dataset.initialY = 0;
-    // item.dataset.xOffset = 0;
-    // item.dataset.yOffset = 0;
-})
+
+
+function addPlayerToPool(divId, x, y, color) {
+    const pool = document.getElementById("canvas");
+  
+    // Create a new <div> element for the player
+    const player = document.createElement("div");
+    player.className = "item";
+    player.style.position = "absolute";
+    player.style.width = "50px"; // Set the width of the player's <div>
+    player.style.height = "50px"; // Set the height of the player's <div>
+    player.style.backgroundColor = color; // Set the background color of the player's <div>
+    player.style.borderRadius = '30px'; // Set the position of the player
+    player.style.left = x + "px"; // Set the x-coordinate
+    player.style.top = y + "px"; // Set the y-coordinate
+  
+    // Append the player's <div> to the pool
+    //pool.appendChild(player);
+    return player;
+  }
+  
+  // Example usage:
+  var gg = addPlayerToPool("player1", 100, 150, 'blue');
+  var gg2 = addPlayerToPool("player2", 250, 50, 'red');
 
 function setupBall(ball) {
     ball.dataset.location = "";
@@ -17,6 +32,7 @@ function setupBall(ball) {
 
     ball.onmousedown = function(event) {
         // (1) prepare to moving: make absolute and on top by z-index
+        stopPainting()
         ball.style.position = 'absolute';
         ball.style.zIndex = 1000;
 
@@ -54,61 +70,9 @@ function setupBall(ball) {
     };
 }
 
-//var ball1 = document.getElementById('ball1');
 
 
-function makePlayer(id, x,y, color) {
-    var player = document.createElement('div') ;
-    player.style.top = y + 'px';
-    player.id = id;
-    player.className = color;
-    return player
-}
-
-var ball2 = makePlayer('ball2',50, 100, 'ball');
-//var ball3 = document.getElementById('ball3');
-// var ball4 = document.getElementById('ball4');
-// var ball5 = document.getElementById('ball5');
-// var ball6 = document.getElementById('ball6');
-// var ball7 = document.getElementById('ball7');
-// var ball8 = document.getElementById('ball8');
-// var ball9 = document.getElementById('ball9');
-// var ball10 = document.getElementById('ball10');
-// var ball11 = document.getElementById('ball11');
-// var ball12 = document.getElementById('ball12');
-// var ball13 = document.getElementById('ball13');
-// var ball14 = document.getElementById('ball14');
-
-function setlocation(ball, topdown, leftright) {
-    var vwValue = parseFloat(leftright);
-    var pixelLeft = (vwValue / 100) * window.innerWidth;
-    var vhValue = parseFloat(topdown);
-    var pixelTop = (vhValue / 100) * window.innerHeight;
-    console.log(pixelTop);
-    ball.style.left = pixelLeft + 'px';
-    ball.style.top = pixelTop + 'px';
-    console.log('hey');
-    return ball;
-}
-
-function setUp(ball, topdown, leftright) {
-    var vwValue = parseFloat(leftright);
-    var pixelLeft = (vwValue / 100) * window.innerWidth;
-    var vhValue = parseFloat(topdown);
-    var pixelTop = (vhValue / 100) * window.innerHeight;
-    console.log(pixelTop);
-    ball.style.left = pixelLeft + 'px';
-    ball.style.top = pixelTop + 'px';
-    console.log('hey');
-    return ball;
-}
-
-function gg(){
-    setUp(ball10, 50, 10)
-}
-
-
-var players = [ ball2]
+var players = [ gg, gg2]
 // ball3, ball4, ball5, ball6, ball7,
  //    ball8, ball9, ball10, ball11, ball12, ball13, ball14];
 
@@ -171,4 +135,92 @@ for (let i = 0; i < players.length; i++) {
 
 function reload() {
     location.reload();
+}
+
+//draw stuff
+
+// wait for the content of the window element
+// to load, then performs the operations.
+// This is considered best practice.
+window.addEventListener('load', ()=>{
+        
+    resize(); // Resizes the canvas once the window loads
+    canvas.addEventListener('mousedown', startPainting);
+    canvas.addEventListener('mouseup', stopPainting);
+    canvas.addEventListener('mousemove', sketch);
+    window.addEventListener('resize', resize);
+});
+    
+const canvas = document.querySelector('#canvas');
+   
+// Context for the canvas for 2 dimensional operations
+const ctx = canvas.getContext('2d');
+    
+// Resizes the canvas to the available size of the window.
+function resize(){
+  ctx.canvas.width =  600;
+  ctx.canvas.height = 500 ;
+}
+    
+// Stores the initial position of the cursor
+let coord = {x:0 , y:0}; 
+   
+// This is the flag that we are going to use to 
+// trigger drawing
+let paint = false;
+    
+// Updates the coordianates of the cursor when 
+// an event e is triggered to the coordinates where 
+// the said event is triggered.
+function getPosition(event){
+  coord.x = event.clientX - canvas.offsetLeft;
+  coord.y = event.clientY - canvas.offsetTop;
+}
+  
+// The following functions toggle the flag to start
+// and stop drawing
+function startPainting(event){
+  paint = true;
+  getPosition(event);
+}
+function stopPainting(){
+  paint = false;
+}
+
+var strokefill = 'black';
+
+function changeColorToRed(){
+    strokefill = 'red';
+}
+function changeColorToBlack(){
+    strokefill = 'black';
+}
+
+function sketch(event){
+  if (!paint) return;
+  ctx.beginPath();
+    
+  ctx.lineWidth = 5;
+   
+  // Sets the end of the lines drawn
+  // to a round shape.
+  ctx.lineCap = 'round';
+    
+  ctx.strokeStyle = strokefill;
+      
+  // The cursor to start drawing
+  // moves to this coordinate
+  ctx.moveTo(coord.x, coord.y);
+   
+  // The position of the cursor
+  // gets updated as we move the
+  // mouse around.
+  getPosition(event);
+   
+  // A line is traced from start
+  // coordinate to this coordinate
+  ctx.lineTo(coord.x , coord.y);
+    
+  // Draws the line.
+  ctx.stroke();
 }
