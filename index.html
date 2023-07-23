@@ -16,36 +16,28 @@
     <button id="refresh">Refresh</button> 
     <Button id="full Coarse">full Coarse</Button>
   </div>
-  -->
-  <div id="outerContainer">
+  -->      
 
-    <div id="container">
-      <div id="item1" class="item red" style.top = '50px' ></div>
-      <div id="item2" class="item red" ></div>
-      <div id="item3" class="item red" ></div>
-      <div id="item4" class="item red" ></div>
-      <div id="item5" class="item red" ></div>
-      <div id="item6" class="item red" ></div>
-      <div id="item7" class="item red" ></div>
+    <div id="Container">
 
-      <div id="item9" class="item blue" ></div>
-      <div id="item10" class="item blue" ></div>
-      <div id="item11" class="item blue" ></div>
-      <div id="item13" class="item blue" ></div>
-      <div id="item12" class="item blue" ></div>
-      <div id="item14" class="item blue" ></div>
-      <div id="ball" class="item ball" ></div>
+      <div id="BallArea">
+        <canvas id="canvas" class="canvas"></canvas>
+      </div>
+
+          
+      <button class= "button1" onclick="Save();">Save Player Postions</button>
+      <button class= "button2" id="play" onclick="Play();">Play and Record</button>
+      <button class= "button3" id="play" onclick="playOnly();">Play only</button>
+      <button class= "button4" id="refresh" onclick="reload();">Refresh</button>
+      <button class="button5" id = "Black" onclick="changeColorToBlack()">Black Ink</button>
+      <button class="button6" id = "Red" onclick="changeColorToRed()">Red Ink</button>
 
     </div>
-    <div id="buttons">
-      <button id="save" onclick="Save();">Save Player Postions</button>
-      <button id="play" onclick="Play();">Play and Record</button>
-      <button id="play" onclick="playOnly();">Play only</button>
-      <button id="refresh" onclick="reload();">Refresh</button>
-    </div>
+
+
 
     
-  </div>
+
 
   
   <script src="main.js"></script>

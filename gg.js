@@ -7,7 +7,7 @@ function addPlayerToPool(divId, x, y, color) {
     // Create a new <div> element for the player
     const player = document.createElement("div");
     player.className = "item";
-    player.style.position = "absolute";
+    player.style.position = "relative";
     player.style.width = "50px"; // Set the width of the player's <div>
     player.style.height = "50px"; // Set the height of the player's <div>
     player.style.backgroundColor = color; // Set the background color of the player's <div>
